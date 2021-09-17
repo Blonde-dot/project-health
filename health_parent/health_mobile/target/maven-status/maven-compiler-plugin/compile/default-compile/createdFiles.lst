@@ -1,0 +1,6 @@
+com\blond\controller\OrderController.class
+com\blond\controller\SetmealController.class
+com\blond\controller\MemberController.class
+com\blond\controller\ValidateCodeController.class
+com\blond\service\SpringSecurityMemberService.class
+com\blond\interceptor\LoginInterceptor.class

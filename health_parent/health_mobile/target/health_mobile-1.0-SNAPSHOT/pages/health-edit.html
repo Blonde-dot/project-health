@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,user-scalable=no,minimal-ui">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../img/asset-favico.ico">
+    <title>完善个人信息</title>
+
+    <link rel="stylesheet" href="../css/page-health-edit.css" />
+    <link rel="stylesheet" href="../css/page-health-index.css" />
+    <link rel="stylesheet" href="../css/page-health-login.css" />
+    <link rel="stylesheet" href="../plugins/elementui/index.css" />
+    <script src="../plugins/jquery/dist/jquery.min.js"></script>
+    <script src="../plugins/healthmobile.js"></script>
+    <script src="../plugins/vue/vue.js"></script>
+    <script src="../plugins/vue/axios-0.18.0.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 160px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+        }
+        .avatar {
+            width: 160px;
+            height: 160px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target="#myNavbar" data-offset="150">
+    <div id="app">
+        <!-- 页面头部 -->
+        <div class="top-header">
+            <span class="f-left"><i class="icon-back" onclick="window.location='index.html'"></i></span>
+            <span class="center">健康体检预约平台</span>
+            <span class="f-right">
+                <!--<el-dropdown class="avatar-container right-menu-item" trigger="click">
+                    <div class="avatar-wrapper">
+                        {{username}}
+                        &lt;!&ndash;ADMIN&ndash;&gt;
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item divided>
+                            <span style="display:block;">修改密码</span>
+                        </el-dropdown-item>
+                        <el-dropdown-item divided>
+                            <span style="display:block;"><a href="/logout.do">退出</a></span>
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>-->
+            </span>
+        </div>
+        <!-- 页面内容 -->
+        <div class="contentBox">
+            <div class="login">
+                <div class="add-form">
+                    <h1 align="center">编辑个人资料</h1>
+                    <el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                        <el-row>
+                            <el-col :span="20">
+                                <el-form-item label="上传头像">
+                                    <el-upload
+                                            class="avatar-uploader"
+                                            action="/member/upload.do"
+                                            :auto-upload="autoUpload"
+                                            name="imgFile"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess"
+                                            :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="14">
+                                <el-form-item label="姓名" prop="name">
+                                    <el-input v-model="formData.name"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="性别">
+                                    <el-select v-model="formData.sex">
+                                        <el-option label="男" value="1"></el-option>
+                                        <el-option label="女" value="2"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="18">
+                                <el-form-item label="身份证号码">
+                                    <el-input v-model="formData.idCard"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="16">
+                                <el-form-item label="电话号码" prop="phoneNumber">
+                                    <el-input v-model="formData.phoneNumber" :disabled="true"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="18">
+                                <el-form-item label="邮箱">
+                                    <el-input v-model="formData.email"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="出生日期">
+                                    <el-date-picker
+                                            v-model="formData.birthday"
+                                            type="date"
+                                            placeholder="选择日期">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="10">
+                                <el-form-item label="身高">
+                                    <el-input v-model="formData.height"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="10">
+                                <el-form-item label="体重">
+                                    <el-input v-model="formData.weight"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-form-item>
+                            <el-button type="primary" @click="handleEdit()">确定</el-button>
+                            <el-button @click="resetForm()">重置</el-button>
+                            <el-button type="primary" @click="handleToPW()">修改密码</el-button>
+                        </el-form-item>
+                    </el-form>
+                    <!--<div slot="footer" class="dialog-footer">
+                        <el-button @click="resetForm()"></el-button>
+                        <el-button type="primary" @click="handleAdd()">确定</el-button>
+                    </div>-->
+                </div>
+                <!--<form id='login-form' class="input-group">
+                    <div class="input-row">
+                        <label>用户名</label>
+                        <input id='account' type="text" class="input-clear input" placeholder="请输入用户名">
+                    </div>
+                    <div class="input-row">
+                        <label>密码</label>
+                        <input id='password' type="password" class="input-clear input" placeholder="请输入密码">
+                    </div>
+                    <div class="btn yes-btn"><a href="health-report.html">确认</a></div>
+                    <div class="btn cancel-btn">取消</div>
+                </form>-->
+            </div>
+        </div>
+    </div>
+    <!-- 页面 css js -->
+
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            username:' ',
+/*            dataList: [],//当前页要展示的分页列表数据*/
+            formData: {
+            },//表单数据
+            rules: {//校验规则
+                code: [{ required: true, message: '项目编码为必填项', trigger: 'blur' }],
+                name: [{ required: true, message: '项目名称为必填项', trigger: 'blur' }]
+            },
+            autoUpload:true,//自动上传
+            imageUrl:null,//模型数据，用于上传图片完成后图片预览
+        },
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+            axios.get("/member/findMemberById.do").then((res)=>{
+                if(res.data.flag){
+                    this.formData = res.data.data;
+                }
+            })
+            axios.get("/member/getMembername.do").then((res)=>{
+                if(res.data.flag){
+                    this.imageUrl = 'http://qyyk9rylr.hn-bkt.clouddn.com/'+res.data.data;
+                }
+            });
+            // 初始化完成后自动查询分页数据
+       /*     this.findPage();*/
+        },
+        methods: {
+            //文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象
+            handleAvatarSuccess(response, file) {
+                // 为模型数据imageUrl赋值，用于页面展示图片
+                // 发送请求方法为elementUI提供的，与ajax返回效果不同 =》response.data == response.data.data
+                this.imageUrl = 'http://qyyk9rylr.hn-bkt.clouddn.com/'+response.data;
+                this.$message({
+                    type:response.flag ? 'success' : 'error',
+                    message:response.message
+                });
+                //设置模型数据（图片名称），后续提交ajax请求时会提交到后台最终保存到数据库
+                this.formData.img = response.data;
+            },
+            //上传图片之前执行
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error('上传套餐图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传套餐图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            //编辑
+            handleEdit() {
+                var idCard = this.formData.idCard
+                if(!checkIdCard(idCard)){
+                    this.$message.error("输入的身份证号码有误，请重新输入");
+                }
+                axios.post("/member/edit4Member.do",this.formData).then((res)=>{
+                    if(res.data.flag){
+                        this.$message({
+                            message:res.data.message,
+                            type:'success'
+                        });
+                        window.location="health-record.html";
+                    }
+                    else{
+                        this.$message.error(res.data.message);
+                    }
+                })
+            },
+            handleToPW(){
+              window.location="updatePassWord.html";
+            },
+            // 重置表单
+            resetForm() {
+                this.formData.idCard=null;
+                this.formData.name=null;
+                this.formData.height=null;
+                this.formData.weight=null;
+                this.formData.birthday=null;
+                this.formData.email=null;
+            },
+            goBack() {
+                history.go(-1);
+            }
+        }
+    })
+</script>
+</html>

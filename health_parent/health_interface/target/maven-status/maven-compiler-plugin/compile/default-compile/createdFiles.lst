@@ -1,0 +1,10 @@
+com\blond\service\PermissionService.class
+com\blond\service\UserService.class
+com\blond\service\CheckGroupService.class
+com\blond\service\OrderService.class
+com\blond\service\OrderSettingService.class
+com\blond\service\SetmealService.class
+com\blond\service\CheckItemService.class
+com\blond\service\MemberService.class
+com\blond\service\ReportService.class
+com\blond\service\RoleService.class

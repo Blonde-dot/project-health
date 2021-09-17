@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blond.dao.UserDao">
+    <!--新建用户-->
+    <insert id="add" parameterType="com.blond.pojo.User">
+        <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_user
+        (birthday,gender,username,password,remark,station,telephone)
+        VALUES
+        (#{birthday},#{gender},#{username},#{password},#{remark},#{station},#{telephone})
+    </insert>
+
+    <!--根据用户名更新用户密码-->
+    <update id="updatePassword" parameterType="com.blond.pojo.User">
+        update t_user set password = #{password}
+        where username = #{username}
+    </update>
+
+    <!--编辑用户信息-->
+    <update id="editBasic" parameterType="com.blond.pojo.User">
+        update t_user
+        <set>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="station != null">
+                station = #{station},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--清除用户与角色的关联-->
+    <delete id="cleanRoleByUser" parameterType="int">
+        delete from t_user_role where user_id = #{userId}
+    </delete>
+
+    <!--删除用户信息-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_user where id = #{userId}
+    </delete>
+
+    <!--设置用户角色-->
+    <insert id="setRoleByUser" parameterType="map">
+        insert into t_user_role (user_id,role_id) values (#{userId},#{roleId});
+    </insert>
+
+    <!--根据用户名查询用户-->
+    <select id="findByUserName" parameterType="string" resultType="com.blond.pojo.User">
+        select * from t_user where username = #{username}
+    </select>
+
+    <!--查询旧密码-->
+    <select id="findPassword" parameterType="string" resultType="string">
+        select password from t_user where username = #{username}
+    </select>
+
+    <!--查询返回管理员总数-->
+    <select id="findAdminCount" resultType="java.lang.Integer" parameterType="int">
+        select count(*) from t_user_role where role_id = #{value}
+    </select>
+
+    <!--查询返回健康管理员总数-->
+    <select id="findDoctorCount" resultType="java.lang.Integer" parameterType="int">
+        select count(*) from t_user_role where role_id = #{value}
+    </select>
+
+    <!--根据条件动态查询用户-->
+    <select id="selectByCondition" parameterType="string" resultType="com.blond.pojo.User">
+        select * from t_user
+            <if test="value != null and value.length > 0 and value != ''">
+                where username = #{value}
+            </if>
+    </select>
+
+    <!--根据id查询用户基本信息-->
+    <select id="findById" resultType="com.blond.pojo.User" parameterType="int">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!-- 查询用户关联角色 -->
+    <select id="findRoleByUserId" resultType="int" parameterType="int">
+        select role_id from t_user_role where user_id = #{id}
+    </select>
+
+
+</mapper>

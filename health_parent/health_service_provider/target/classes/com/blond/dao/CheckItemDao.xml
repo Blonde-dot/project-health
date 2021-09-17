@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blond.dao.CheckItemDao">
+
+    <!-- 插入检查项 -->
+    <insert id="add" parameterType="com.blond.pojo.CheckItem">
+        insert into t_checkitem(code,name,sex,age,price,type,remark,attention)
+                      values
+        (#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+    
+    <!--根据条件查询分页数据-->
+    <!--PageHelper会完善sql语句，并查询到对象集合封装进内部-->
+    <select id="selectByCondition" parameterType="string" resultType="com.blond.pojo.CheckItem">
+        select * from t_checkitem
+        <if test="value !=null and value.length > 0">
+            where code = #{value} or name = #{value}
+        </if>
+    </select>
+
+    <!--根据检查项ID统计数据-->
+    <select id="findCountByCheckItemId" parameterType="int" resultType="long">
+        select count(*) from t_checkgroup_checkitem where checkitem_id=#{checkitem_id}
+    </select>
+
+    <!--根据id删除检查项-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_checkitem where id = #{id}
+    </delete>
+
+    <!--根据编辑信息动态更新字段-->
+    <update id="edit" parameterType="com.blond.pojo.CheckItem">
+        update t_checkitem
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询检查项-->
+    <select id="findById" parameterType="int" resultType="com.blond.pojo.CheckItem">
+        select * from t_checkitem where id = #{id}
+    </select>
+
+    <!--查询所有检查项-->
+    <select id="findAll" resultType="com.blond.pojo.CheckItem">
+        select * from t_checkitem
+    </select>
+
+    <!--根据检查组id查询关联的所有检查项-->
+    <select id="findCheckItemById" parameterType="int" resultType="com.blond.pojo.CheckItem">
+        select * from t_checkitem
+        where
+        id in(select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{id});
+    </select>
+</mapper>

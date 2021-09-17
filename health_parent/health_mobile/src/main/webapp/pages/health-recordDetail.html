@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,user-scalable=no,minimal-ui">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../img/asset-favico.ico">
+    <link rel="stylesheet" href="../css/page-health-index.css" />
+    <link rel="stylesheet" href="../css/page-health-login.css" />
+    <link rel="stylesheet" href="../plugins/elementui/index.css" />
+    <script src="../plugins/jquery/dist/jquery.min.js"></script>
+    <script src="../plugins/healthmobile.js"></script>
+    <script src="../plugins/vue/vue.js"></script>
+    <script src="../plugins/vue/axios-0.18.0.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <title>健康档案详情</title>
+
+    <link rel="stylesheet" href="../css/page-health-recordDetail.css" />
+</head>
+
+<body data-spy="scroll" data-target="#myNavbar" data-offset="150">
+    <div class="app">
+        <!-- 页面头部 -->
+        <div class="top-header">
+            <span class="f-left"><i class="icon-back" onclick="window.location='index.html'"></i>返回</span>
+            <span class="center">健康体检预约平台</span>
+            <span class="f-right"><i class="icon-more"></i></span>
+        </div>
+        <!-- 页面内容 -->
+        <div class="contentBox">
+            <div class="list-content">
+                <div class="fix-info">
+                    <div id="app">
+                    <ul class="list-unstyled ">
+                        <li><span class="tit">档案号</span><span class="info">{{dataList.fileNumber}}</span></li>
+                        <li><span class="tit">姓名</span><span class="info">{{dataList.name}}</span></li>
+                        <li><span class="tit">性别</span><span class="info">{{dataList.sex == '1' ? '男':'女'}}</span></li>
+                        <li><span class="tit">出生日期</span><span class="info">{{dataList.birthday}}</span></li>
+                        <li><span class="tit">身高(cm)</span><span class="info">{{dataList.height}}</span></li>
+                        <li><span class="tit">体重(kg)</span><span class="info">{{dataList.weight}}</span></li>
+                       <!-- <el-row>
+                            <el-col label="档案号" v-model="fileNumber" class="info">
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col label="姓名" v-model="name">
+                                &lt;!&ndash;<li><span class="tit">档案号</span><span class="info">110111001110</span></li>&ndash;&gt;
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col label="性别" v-model="sex">
+                              &lt;!&ndash;  <li><span class="tit">档案号</span><span class="info">110111001110</span></li>&ndash;&gt;
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col label="身高（cm）" v-model="height">
+                               &lt;!&ndash; <li><span class="tit">档案号</span><span class="info">110111001110</span></li>&ndash;&gt;
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col label="体重（kg）" v-model="weight">
+                                &lt;!&ndash;<li><span class="tit">档案号</span><span class="info">110111001110</span></li>&ndash;&gt;
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col label="出生日期" v-model="birthday">
+                                &lt;!&ndash;<li><span class="tit">档案号</span><span class="info">110111001110</span></li>&ndash;&gt;
+                            </el-col>
+                        </el-row>-->
+
+                    </ul>
+                    </div>
+                <!--</div>
+                <div class="fix-info">
+                    <ul class="mui-list-unstyled ">
+                        <li><span class="tit">身高</span><span class="info">170cm</span></li>
+                        <li><span class="tit">体重</span><span class="info">50kg</span></li>
+                    </ul>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- 页面 css js -->
+    <!-- <script src="health-index.js"></script> -->
+
+
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            dataList:{
+                fileNumber:'',
+                name:'',
+                sex:'',
+                weight:'',
+                height:'',
+                birthday:'',
+            },
+        },
+        created(){
+            axios.get("/member/getMember.do").then((res)=>{
+                if(res.data.flag){
+                    this.dataList = res.data.data;
+                    /*this.fileNumber=res.data.fileNumber;
+                    this.name=res.data.data;
+                    this.sex=res.data.sex;
+                    this.weight=res.data.weight;
+                    this.height=res.data.height;
+                    this.birthday=res.data.birthday;*/
+                }else{
+                    this.$message.error(res.data.message);
+                }
+
+            })
+        }
+    })
+</script>
+</html>
